@@ -1,0 +1,6 @@
+/node_modules/
+/*.log
+/.env
+/json/
+/test.js
+/*.gz

@@ -4,7 +4,8 @@ const CronJob = require('cron').CronJob
 
 //console.log(func.getProvalidatorDetail())
 //console.log(func.getMessage('osmosis'))
-console.log(func.getProposal(66))
+//console.log(func.getProposal(66))
+console.log(func.getLatestProposalNum())
 
 
 

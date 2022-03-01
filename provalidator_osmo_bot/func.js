@@ -215,14 +215,19 @@ function getOsmosisInfo(){
 		'not_bonded_tokens' : json.not_bonded_tokens,
 		'max_tokens' :''
 	}
-	
-	for(var j in json.total_supply_tokens.supply){
-		if(json.total_supply_tokens.supply[j].denom == 'uosmo'){
-			returnArr.max_tokens = json.total_circulating_tokens.supply[j].amount
-			break
-		}
-	}
+//	for(var j in json.total_supply_tokens.supply){
+//		if(json.total_supply_tokens.supply[j].denom == 'uosmo'){
+//			returnArr.max_tokens = Number(json.total_circulating_tokens.supply[j].amount)
+//			break
+//		}
+//	}
+	returnArr.max_tokens = getOsmosisMaxTokens()
 	return returnArr	
+}
+
+function getOsmosisMaxTokens(){	
+	let json = fetch("https://osmosis.stakesystems.io/cosmos/bank/v1beta1/supply/uosmo").json()
+	return json.amount.amount
 }
 
 module.exports = {
@@ -231,5 +236,6 @@ module.exports = {
 	getProposal : getProposal,
 	getProposalFromServer : getProposalFromServer,
 	getProposalFromLocal : getProposalFromLocal,
-	getLatestProposalNum : getLatestProposalNum
+	getLatestProposalNum : getLatestProposalNum,
+	getOsmosisInfo : getOsmosisInfo,
 }

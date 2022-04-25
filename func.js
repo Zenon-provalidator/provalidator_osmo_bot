@@ -196,31 +196,45 @@ function getPrice(){
 }
 
 function getProvalidatorDetail(){
-	let json = fetch(process.env.OSMOSIS_API_URL+"/staking/validators").json()
+	let j = fetch(process.env.OSMOSIS_API_URL+"/staking/validators").json()
 	let obj = {}
-	for(var i in json){
-		if(process.env.PROVALIDATOR_OPERATER_ADDRESS === json[i].operator_address){			
-			obj.rank = json[i].rank
-			obj.rate = json[i].rate
-			obj.tokens = json[i].tokens
+	let sortData = []
+	//console.log(j)
+	for(var i in j.result){
+		json = j.result[i]
+		sortData.push({operator_address : json.operator_address,tokens : json.tokens})
+		if(process.env.PROVALIDATOR_OPERATER_ADDRESS === json.operator_address){
+			obj.operator_address = json.operator_address
+			obj.rate = json.commission.commission_rates.rate
+			obj.tokens = json.tokens
 		}
 	}
+	obj.rank = getRank(sortData,obj)
+	
 	return obj	
 }
 
+function getRank(sortData,obj){
+	var rank =0
+	sortData.sort(function(a, b){
+		return b.tokens - a.tokens
+	})
+	for (var i=0; i< sortData.length; i++){
+		sortData[i].rank = i
+		if(sortData[i].operator_address == obj.operator_address){
+			rank = i +1
+		}
+	}
+	return rank > 0 ? rank +1 : rank
+}
+
 function getOsmosisInfo(){
-	let json = fetch(process.env.OSMOSIS_API_URL+"/status").json()
+	let json = fetch(process.env.OSMOSIS_API_URL+"/staking/pool").json()
 	let returnArr = { 
-		'bonded_tokens' : json.bonded_tokens,
-		'not_bonded_tokens' : json.not_bonded_tokens,
+		'bonded_tokens' : json.result.bonded_tokens,
+		'not_bonded_tokens' : json.result.not_bonded_tokens,
 		'max_tokens' :''
 	}
-//	for(var j in json.total_supply_tokens.supply){
-//		if(json.total_supply_tokens.supply[j].denom == 'uosmo'){
-//			returnArr.max_tokens = Number(json.total_circulating_tokens.supply[j].amount)
-//			break
-//		}
-//	}
 	returnArr.max_tokens = getOsmosisMaxTokens()
 	return returnArr	
 }

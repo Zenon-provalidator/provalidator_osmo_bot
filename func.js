@@ -129,7 +129,7 @@ function getProposal(num){
 }
 
 function getProposalFromServer(num){ //write Proposal json
-	let json = fetch(process.env.OSMSIS_API_URL+"/gov/proposals/"+num).json()
+	let json = fetch(process.env.OSMOSIS_API_URL+"/gov/proposals/"+num).json()
 	let file = './json/proposals/' + num + '.json'
 	let wJson = {}
 //	console.log(json.result.content.value.title)
